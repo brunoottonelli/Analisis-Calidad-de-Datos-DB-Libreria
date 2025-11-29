@@ -1,0 +1,145 @@
+% /////////////////////////////////////////////////////////////////
+% ///////                      PREÁMBULO                    ///////
+% /////////////////////////////////////////////////////////////////
+
+
+\documentclass[a4paper,openany,oneside]{book}
+
+% \documentclass[a4paper,openany,oneside]{scrbook}
+
+
+% Paquetes para el idioma y fuentes
+%\usepackage[english]{babel}
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+
+% Configuración de margenes (opcional)
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+% \usepackage{atbegshi}
+% \AtBeginShipoutNext{\thispagestyle{plain}}
+
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}   % Required for inserting images
+\usepackage{array}      % Para la definición de columnas con ancho específico
+\usepackage[table,xcdraw]{xcolor} % Para el color de las celdas
+\usepackage{adjustbox}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage{pdfpages}
+\usepackage{svg}
+\usepackage{placeins}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+ %opciones para las imagenes
+\usepackage{float}   
+\usepackage{caption}
+\captionsetup[figure]{skip=0pt} % Ajusta la distancia entre la imagen y el caption
+
+% Ajuste de interlineado entre parrafos y sangria
+\usepackage{parskip}
+\usepackage{titlesec}
+
+% \setlength{\parskip}{1em} 
+% \setlength{\parindent}{30pt} 
+% \titlespacing{\subsection}{0pt}{1em}{0pt}
+% \titlespacing{\section}{0pt}{2em}{0pt}
+% \titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
+\newunicodechar{⟪}{\llangle}
+\newunicodechar{⟫}{\rrangle}
+
+
+
+
+
+\begin{document}
+
+% /////////////////////////////////////////////////////////////////
+% ///////                      CARÁTULA                     ///////
+% /////////////////////////////////////////////////////////////////
+
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    
+    {\Huge\bfseries Entrega Final\\[0.4cm] Calidad de Datos e Información\par}
+    
+    \vspace{1.5cm}
+    
+    {\LARGE\bfseries Context-aware Data Quality\\Methodology (CaDQM)\par}
+    
+    \vspace{2cm}
+    
+    {\Large\bfseries Grupo 11\par}
+    
+    \vspace{1.5cm}
+    
+    \begin{tabular}{rl}
+        \textbf{Bruno Ottonelli} & (4.954.242-1) \\
+        \textbf{Gabriel Rode}    & (4.535.978-1) \\
+    \end{tabular}
+    
+    \vfill
+    
+    {\large Universidad de la República\\
+    Facultad de Ingeniería\par}
+    
+    \vspace{0.5cm}
+    {\large Junio 2025\par}
+\end{titlepage}
+
+
+
+% /////////////////////////////////////////////////////////////////
+% ///////                       ÍNDICE                      ///////
+% /////////////////////////////////////////////////////////////////
+
+\tableofcontents   % Crear el índice
+
+
+
+% /////////////////////////////////////////////////////////////////
+% ///////                     CONTENIDO                     ///////
+% /////////////////////////////////////////////////////////////////
+\chapter{Introducción}
+
+En este trabajo presentamos la aplicación práctica del método \textbf{CaDQM} (Context-aware Data Quality Methodology). El objetivo fue, mediante dicha metodología, evaluar y tratar de mejorar la calidad de los datos en un caso particular que simula la fusión de dos librerías, L1 y L2, en una nueva entidad llamada NL.
+
+Durante el desarrollo seguimos las fases definidas por CaDQM: \textit{Data Quality Planning}, \textit{Data Quality Assessment} y \textit{Data Quality Improvement}, lo que nos permitió abordar el trabajo de forma estructurada y ordenada.
+
+En este informe detallamos el proceso seguido, las decisiones que tomamos en cada etapa y cómo la metodología CaDQM nos ayudó a obtener un diagnóstico preciso del estado de calidad de los datos tratados.
+
+\textbf{Nota:} la fase de \textit{Data Quality Improvement} fue aplicada de forma parcial.
+
+\include{Fase 1/Fase 1}
+\include{Fase 2/Fase 2 merged}
+\include{Fase 3/Fase 3}
+
+\chapter{Conclusiones finales}
+
+Este proyecto nos permitió implementar las distintas fases de CaDQM, desde la planificación inicial hasta la propuesta de acciones de mejora (de forma parcial). 
+
+Durante el proceso aplicamos las distintas técnicas y herramientas propuestas para identificar, medir y evaluar problemas de calidad de datos sobre una base integrada proveniente de dos fuentes distintas, simulando un caso real.
+
+Cada una de las fases nos permitió entender distintos problemas sobre la calidad de los datos y como cada etapa se alimentaba de la anterior pudimos ver como es importante tener una base firme para llegar a las etapas mas avanzadas con un proyecto solido (y en concordancia con el cliente).
+
+Si bien no se implemento de forma total la Fase 3, pudimos elaborar un plan de mejora concreto y proponer una estrategia para su desarrollo en conjunto con el cliente.
+
+En resumen valoramos el poder aplicar una metodología completa sobre un caso de un cliente real, con muchas dimensiones y problemas a considerar así como distintas decisiones a tomar. Esta experiencia fue útil para poder bajar a tierra los distintos temas vistos en clase y ademas poder tener criterio propio a la hora de enfrentarnos con posibles problemas de calidad de datos en la vida profesional.
+
+Finalmente el trabajo nos permitió comprender y aplicar el modelo CaDQM en profundidad, destacando tanto sus ventajas como los distintos problemas o desafíos que implica llevarlo a la práctica.
+
+\vspace{0.3cm}
+
+\noindent Como complemento al informe dejamos adjuntos una serie de scripts que incluyen la base de datos de metadatos de calidad y todos los algoritmos implementados para la medición y análisis realizados durante el proyecto.
+
+\end{document}

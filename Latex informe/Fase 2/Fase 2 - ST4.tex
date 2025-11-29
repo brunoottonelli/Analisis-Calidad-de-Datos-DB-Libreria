@@ -1,0 +1,833 @@
+
+\section{ST4: DQ Model Definition}
+
+\subsection{Entradas y salidas}
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte del análisis de requerimientos de usuarios (\ref{ST3_reqUsuarios})& Reporte de problemas de CD priorizados (\ref{ST4_problemas_priorizados})\\
+        \hline
+        Reporte del análisis de datos (\ref{ST2_SubsectionAnalisis}) & Modelo de CD (\ref{ST4_modelo_calidad_contextual})\\
+        \hline
+        Reporte de problemas de CD (\autoref{Problemas_ST2}) &  \\
+        \hline
+        Modelo de Contexto (\ref{ST3_SubsectionContexto}) & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+
+
+
+\subsection{Priorización de los problemas de calidad de datos}
+\label{ST4_problemas_priorizados}
+
+La siguiente tabla muestra los problemas de calidad de datos detectados durante la \textit{Fase 1}, ya priorizados.
+
+Para la priorización, se consideró que todos los problemas de calidad asociados a reglas de negocio tuvieran alta prioridad, dado que representan un interés central para el cliente o constituyen requisitos esenciales para el correcto funcionamiento de cualquier sistema de bases de datos.
+
+Los errores de formato o que tienen que ver con una posible futura reestructuración de la base de datos fueron clasificados con una prioridad media, ya que, si bien no impiden el uso de los datos, pueden dificultar su utilización,  presentación o interpretación.
+
+Por otro lado, aquellos problemas relacionados con errores ortográficos, tipográficos o inconsistencias en la escritura se asignaron con prioridad baja. La única excepción a esta regla es el caso del \textit{P3} con prioridad media, ya que un error en el \textit{Publisher} interfiere directamente con la necesidad de filtrado \textit{F2}, imposibilitando parte de las tareas del usuario \textit{U1}.
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3} % Aumenta el espacio entre filas
+\begin{tabular}{|p{5cm}|p{8.5cm}|p{2cm}|}
+    \hline
+    \multicolumn{3}{|c|}{\cellcolor{blue!30} \textbf{Problemas detectados en la Calidad de los Datos}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Campo} & \textbf{Problema de calidad} & \textbf{Prioridad} \\
+    \hline
+    NL\_Books.ISBN & P1: Entradas no respetan el formato ISBN ya que algunos están en formato ASID. & Alta \\
+    \hline
+    NL\_Books.PublisherDate & P2: Las fechas tienen distinto formato. & Media \\
+    \hline
+    NL\_Books.PublisherID & P3: Mismo publisher escrito de forma distinta. & Media \\
+    \hline
+    NL\_Books.Title & P4: Títulos mal escritos. & Baja \\
+    \hline
+    NL\_Books.AuthorID & P5: Mismo autor escrito de forma distinta. & Baja \\
+    \hline
+    NL\_USERS.Age & P6: Valores de edad poco coherentes (por ejemplo 0). & Alta \\
+    \hline
+    NL\_USERS.Location & P7: Ciudades mal escritas. & Baja \\
+    \hline
+    NL\_RATINGS.review\_time & P8: Formato de fecha/hora inconsistente. & Media \\
+    \hline
+    NL\_RATINGS.review\_score & P9: Valores no numéricos en la puntuación. & Media \\
+    \hline
+    NL\_RATINGS.review\_score & P10: Los valores importados entre L1 y L2 manejan distintas escalas (L1 puntúa de 0 a 5 y L2 de 0 a 10). & Media \\
+    \hline
+    Base de datos & P11: Gran cantidad de nulos en muchos de los atributos, incluyendo claves. & Alta \\
+    \hline
+    NL\_Books & P12: No hay campo de rating promedio del libro (podría calcularse). & Media
+    \\
+    \hline
+    NL\_RATINGS.Helpfullness & P13: Este atributo en realidad debería ser dos atributos diferentes: cantidad de votaciones en esa review y cantidad de votaciones que consideraron útil esa review. & Media
+    \\
+    \hline
+    NL\_Books.AuthorID & P14: Libros indican autores de forma distinta cuando tienen mas de uno (dos libros con autores \{A,B\} y \{B,A\} deben considerarse con los mismos autores). & Baja 
+    \\
+    \hline
+     NL\_RATINGS.review\_score & P15: Podría haber valores fueron del rango 0 a 10. &  Media
+    \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+
+
+
+
+
+
+\subsection{Métricas}
+
+\subsubsection{check\_ISBN}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{| p{3.5cm} | p{11.5cm} |}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+    \hline
+    \textbf{Nombre} & \textbf{check\_ISBN} \\
+    \hline
+    \textbf{Descripción} & Controla si el valor es un ISBN válido. \\
+    \hline
+    \textbf{Granularidad} & Celda \\
+    \hline
+    \textbf{Dominio del Resultado} & \{0, 1\} \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+% \vspace{1em}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{| p{3.5cm} | p{11.5cm} |}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+    \hline
+    \textbf{Descripción} & Implementa la métrica Check\_ISBN teniendo en cuenta la estructura de un código ISBN. \\
+    \hline
+    \textbf{Tipos de datos de entrada} & String \\
+    \hline
+    \textbf{Tipos de datos de salida} & Boolean \\
+    \hline
+    \textbf{Algoritmo} & 
+\texttt{def Check\_ISBN(codigo):} \\ 
+& \texttt{\ \ size = len(codigo)} \\
+& \texttt{\ \ \# Chequea para el caso de un ISBN10} \\
+& \texttt{\ \ if (size == 10):} \\
+& \texttt{\ \ \ \ verifica que los primeros 9 caracteres sean dígitos} \\
+& \texttt{\ \ \ \ verifica que el último caracter sea un dígito o una "X"} \\
+& \texttt{\ \ \ \ verifica que el dígito verificador sea correcto} \\
+& \texttt{\ \ \# Chequea para el caso de un ISBN13} \\
+& \texttt{\ \ if (size == 13):} \\
+& \texttt{\ \ \ \ verifica que todos los caracteres sean dígitos} \\
+& \texttt{\ \ \ \ verifica que el dígito verificador sea correcto} \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+% \vspace{1em}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{| p{3.5cm} | p{11.5cm} |}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+    \hline
+    \textbf{Tipo} & Medición \\
+    \hline
+    \textbf{Descripción} & Utiliza el algoritmo de cálculo de ISBN para verificar la validez del dato. \\
+    \hline
+    \textbf{Aplicado a} & Atributo ⟪ISBN⟫ de la tabla \texttt{NL\_Books} \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+
+
+
+% -------------
+
+\subsubsection{check\_edades}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & check\_edades \\
+\hline
+\textbf{Descripción} & Controla si la edad es válida. \\
+\hline
+\textbf{Granularidad} & Celda \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica check\_edades verificando si la edad tiene formato correcto y es un valor razonable. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & 
+\texttt{IsNumeric(edad) AND edad > 0 AND edad < 100} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Verifica que tenga un valor numérico entre 1 y 99. \\
+\hline
+\textbf{Aplicado a} & Atributo ⟪Age⟫ de la tabla \texttt{NL\_Users} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% -------------------------
+
+\subsubsection{check\_price}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & check\_price \\
+\hline
+\textbf{Descripción} & Controla si el precio es válido. \\
+\hline
+\textbf{Granularidad} & Celda \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica check\_price verificando si el valor tiene formato correcto. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & \texttt{IsNumeric(price) AND price >= 0} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Verifica que tenga un valor numérico positivo con una consulta SQL. \\
+\hline
+\textbf{Aplicado a} & Atributo ⟪Price⟫ de la tabla \texttt{NL\_Books} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% ---------------------------
+
+
+
+\subsubsection{duplicate\_ratio}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & duplicate\_ratio \\
+\hline
+\textbf{Descripción} & Da el porcentaje de valores duplicados. \\
+\hline
+\textbf{Granularidad} & Columna \\
+\hline
+\textbf{Dominio del Resultado} & [0...1] \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica duplicate\_ratio sobre un atributo dado. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Float \\
+\hline
+\textbf{Algoritmo} & 
+\texttt{def duplicate\_ratio(data, column):} \\ 
+& \texttt{\ \ \ \ total = len(data)} \\
+& \texttt{\ \ \ \ duplicated = data.duplicated(subset=[column]).sum()} \\
+& \texttt{\ \ \ \ return duplicated / total} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Dados los datos y el atributo, calcula el porcentaje de valores duplicados en ese atributo. \\
+\hline
+\textbf{Aplicado a} & Atributos ⟪ISBN⟫, ⟪AuthorID⟫, ⟪PublisherID⟫, ⟪User\_ID⟫ de la tabla \texttt{NL\_Books}. \newline
+Atributo ⟪ID⟫ de la tabla \texttt{NL\_Users}. \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% ---------------------------------------
+
+
+
+\subsubsection{check\_RN1}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & check\_RN1 \\
+\hline
+\textbf{Descripción} & Da el porcentaje de entradas de la tabla que tienen al menos un campo vacío entre los atributos \texttt{isbn}, \texttt{titulo}, \texttt{autor} y \texttt{editor}. \\
+\hline
+\textbf{Granularidad} & Conjunto de columnas \\
+\hline
+\textbf{Dominio del Resultado} & [0...1] \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica check\_RN1 sobre una tabla dada. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Float \\
+\hline
+\textbf{Algoritmo} & 
+\texttt{def Check\_RN1(datos):} \\
+& \texttt{\ \ \ \ \# Seleccionar solo las columnas relevantes (isbn, titulo, autor, editor)} \\
+& \texttt{\ \ \ \ datos\_relevantes = datos[['isbn', 'titulo', 'autor', 'editor']]} \\
+& \texttt{\ \ \ \ \# Verificar cuántas filas tienen al menos un campo NULL entre estas columnas} \\
+& \texttt{\ \ \ \ incompletos = datos\_relevantes.isnull().any(axis=1).sum()} \\
+& \texttt{\ \ \ \ \# Calcular la proporción de filas incompletas} \\
+& \texttt{\ \ \ \ return incompletos / len(datos)} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Dada una tabla, calcula el porcentaje de entradas que tienen al menos un campo vacío entre los atributos \texttt{isbn}, \texttt{titulo}, \texttt{autor} y \texttt{editor}. \\
+\hline
+\textbf{Aplicado a} & Tabla \texttt{NL\_Books}. \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+
+% -----------------------------
+
+
+
+\subsubsection{contar\_nulls}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & contar\_nulls \\
+\hline
+\textbf{Descripción} & Calcula el porcentaje de entradas vacías en una columna. \\
+\hline
+\textbf{Granularidad} & Columna \\
+\hline
+\textbf{Dominio del Resultado} & [0...1] \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica contar\_nulls. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Float \\
+\hline
+\textbf{Algoritmo} & \texttt{def porcentaje\_nulos(atributo):} \\
+& \texttt{\ \ \ \ nulos = atributo.isnull()} \\
+& \texttt{\ \ \ \ contador\_nulos = nulos.sum()} \\
+& \texttt{\ \ \ \ porcentaje = contador\_nulos / len(atributo)} \\
+& \texttt{\ \ \ \ return porcentaje} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Dado un atributo de una tabla, calcula el porcentaje de entradas vacías. \\
+\hline
+\textbf{Aplicado a} & Cualquier atributo de cualquier tabla. \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% ---------------------------------------
+
+\subsubsection{concistencia\_ratings}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & concistencia\_ratings \\
+\hline
+\textbf{Descripción} & Verifica que la cantidad de ratings entre las distintas tablas sea coherente. \\
+\hline
+\textbf{Granularidad} & Conjunto de columnas \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica concistencia\_ratings contando la cantidad de ocurrencias de un ISBN válido en la tabla NL\_ratings y lo compara con lo declarado en el atributo rating\_count de NL\_Books. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & \texttt{def funcion\_consistencia\_ratings(libros, valid\_isbn, ratings):} \\
+& \texttt{\ \ \ \ libros\_validos = libros[valid\_isbn==True]} \\
+& \texttt{\ \ \ \ for libro in libros\_validos:} \\
+& \texttt{\ \ \ \ \ \ \ \ isbn = libro['isbn']} \\
+& \texttt{\ \ \ \ \ \ \ \ cantidad = (ratings['isbn'] == isbn).sum()} \\
+& \texttt{\ \ \ \ \ \ \ \ contados[isbn] = cantidad} \\
+& \texttt{\ \ \ \ rating\_esperado = libros\_validos['rating\_counts']} \\
+& \texttt{\ \ \ \ return rating\_esperado == contados} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Agregación \\
+\hline
+\textbf{Descripción} & Dada una tabla de reviews, una tabla de libros (ambas con el campo isbn) y una lista que indiquen si son válidos o no, determina si hay congruencia entre lo registrado en ambas tablas sobre los ratings. \\
+\hline
+\textbf{Aplicado a} & Conjunto de atributos (NL\_ratings.ISBN, NL\_books.ISBN, NL\_books.Rating\_Count) \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% ------------------------------------------
+
+
+\subsubsection{consistencia\_fechas}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & consistencia\_fechas \\
+\hline
+\textbf{Descripción} & Verifica que la fecha de un rating sea posterior a la fecha de publicación del libro. \\
+\hline
+\textbf{Granularidad} &  Conjunto de columnas \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica concistencia\_fechas comparando las fechas de review\_time de la tabla NL\_reviews y la de PublisherDate de NL\_Books. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & \texttt{def consistencia\_fechas(NL\_reviews, NL\_books):} \\
+& \texttt{\ \ \ \ result = []} \\
+& \texttt{\ \ \ \ for i in range(len(NL\_reviews)):\ } \\
+& \texttt{\ \ \ \ \ \ \ \ isbn = NL\_reviews['isbn'][i]} \\
+& \texttt{\ \ \ \ \ \ \ \ fila\_libro = NL\_books[NL\_books['isbn'] == isbn]} \\
+& \texttt{\ \ \ \ \ \ \ \ review\_time, PublishedDate = fila\_libro[['review\_time', 'PublishedDate']].values[0]} \\
+& \texttt{\ \ \ \ \ \ \ \ result.append(review\_time >= PublishedDate)} \\
+& \texttt{\ \ \ \ return result} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Dada una tabla de reviews y una tabla de libros (ambas con el campo isbn), determina si la fecha de la review es posterior a la publicación del libro. \\
+\hline
+\textbf{Aplicado a} & Conjunto de atributos ⟪NL_Reviews.review_time, NL_Books.PublisherDate⟫  \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% -------------------------------
+
+
+
+\subsubsection{missing\_rating\_books}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & missing\_rating\_books \\
+\hline
+\textbf{Descripción} & Para ratings sobre libros, controla la existencia de estos en la base de datos. \\
+\hline
+\textbf{Granularidad} & Celda \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica check\_rating\_books para ver si los libros indicados en los ratings existen. \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & \texttt{SELECT COUNT(*) FROM NL\_Ratings WHERE NOT EXISTS(SELECT * FROM NL\_Books WHERE NL\_Ratings.ISBN = NL\_Books.ISBN)} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Verifica que el libro en NL\_Ratings exista en NL\_Books \\
+\hline
+\textbf{Aplicado a} & Atributos ⟪ISBN⟫ en las tablas NL\_Books y NL\_Ratings \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% ------------------------------------
+
+\subsubsection{date\_format}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Métrica}} \\
+\hline
+\textbf{Nombre} & date\_format \\
+\hline
+\textbf{Descripción} & Controla el formato de fecha de todas las columnas tipo fecha \\
+\hline
+\textbf{Granularidad} & Celda \\
+\hline
+\textbf{Dominio del Resultado} & \{0, 1\} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica date\_format para controlar que el formato de fecha sea correcto \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & Boolean \\
+\hline
+\textbf{Algoritmo} & \texttt{TRY\_CONVERT(DATE,date,103)} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{3.5cm} | p{11.5cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Método aplicado}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Verifica que el campo PublisherDate en Books y el campo review\_time en Ratings respeten el formato correcto de fecha dd/mm/yyyy \\
+\hline
+\textbf{Aplicado a} & Atributo ⟪PublisherDate⟫ en la tabla NL\_Books y atributo ⟪review\_time⟫ en la tabla NL\_Ratings \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+% --------------------------------------------
+
+
+
+\subsubsection{duplicated\_authors}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{5cm}|p{10cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{MÉTRICA}} \\
+\hline
+\textbf{Nombre} & duplicated\_authors \\
+\hline
+\textbf{Descripción} & Indica cuántas tuplas nombran más de un autor \\
+\hline
+\textbf{Granularidad} & Columna \\
+\hline
+\textbf{Dominio del Resultado} & [0...1] \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{5cm}|p{10cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{MÉTODO}} \\
+\hline
+\textbf{Descripción} & Implementa la métrica duplicated\_authors para obtener el porcentaje de tuplas que indican más de un autor \\
+\hline
+\textbf{Tipos de datos de entrada} & String \\
+\hline
+\textbf{Tipos de datos de salida} & float \\
+\hline
+\textbf{Algoritmo} & \texttt{DEFINE @tuplasDuplicadas = SELECT COUNT(*) FROM NL\_Authors WHERE AuthorID LIKE '\%,\%'} \newline
+\texttt{DEFINE @tuplasTotales = SELECT COUNT(*) FROM NL\_Authors} \newline
+\texttt{SELECT @tuplasDuplicadas / @tuplasTotales} \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{5cm}|p{10cm}|}
+\hline
+\multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{MÉTODO APLICADO}} \\
+\hline
+\textbf{Tipo} & Medición \\
+\hline
+\textbf{Descripción} & Divide las tuplas que indican más de un autor sobre las tuplas totales \\
+\hline
+\textbf{Aplicado a} & Atributo ⟪AuthorID⟫ en la tabla NL\_Books \\
+\hline
+\end{tabular}
+}
+\end{center}
+
+
+
+
+
+
+
+
+
+% \clearpage
+
+
+
+
+
+
+
+% ---------------------
+% % el excel que falta
+% ELIMINAR PAGINA. ACÁ VA EL PDF DEL MODELO DE CALIDAD.
+
+% \clearpage
+
+% ELIMINAR PAGINA. ACÁ VA EL PDF DEL MODELO DE CALIDAD.
+
+% \clearpage
+
+% ELIMINAR PAGINA. ACÁ VA EL PDF DEL MODELO DE CALIDAD.
+
+% \clearpage
+
+% ELIMINAR PAGINA. ACÁ VA EL PDF DEL MODELO DE CALIDAD.
+
+% \clearpage
+
+
+
+
+
+
+ 
+

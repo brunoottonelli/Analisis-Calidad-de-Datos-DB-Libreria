@@ -1,0 +1,130 @@
+\chapter{Fase 3 - Data Quality Improvement}
+
+\section{Entradas y salidas de la Fase 3 completa}
+Dado que la Fase 3 del modelo CaDQM no se ejecutará completamente y siguiendo cada una de sus etapas, sino que se hará de manera resumida, se presentan a continuación las entradas y salidas esperadas de cada una de las etapas de la fase:
+
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas de la ST7}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte de evaluación de CD (\ref{ImplementacionMetodos}) & Reporte con los problemas de CD seleccionados y priorizados de acuerdo a sus causas (\ref{Fase3_causas})\\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas de la ST8}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte con los problemas de CD seleccionados y priorizados de acuerdo a sus causas (\ref{Fase3_causas}) & Reporte de análisis de costos\\
+        \hline
+         & Plan de mejora de la CD (\ref{fase3_plan_de_mejora})\\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas de la ST9}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte de análisis de costos & Reporte de ejecución del plan de mejora de CD\\
+        \hline
+        Plan de mejora de la CD (\ref{fase3_plan_de_mejora}) & Data at hand mejorados\\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+BD: Base de datos.
+
+
+
+\section{Análisis de causas}
+\label{Fase3_causas}
+
+Los datos disponibles en el \textit{data at hand} provienen de dos bases de datos distintas, cada una con sus propios atributos, rangos de valores y formatos definidos. Estas diferencias provocan diversas inconsistencias en la base unificada, vinculadas a los problemas de calidad P1, P2, P8 y P10. Además, como consecuencia directa de la incompatibilidad entre los atributos, se genera una gran cantidad de valores nulos, lo que da lugar al problema P11. Estos errores pueden considerarse de prioridad media, ya que, si bien no impiden directamente el uso de los datos, sí afectan su integridad y consistencia general.
+
+Por otro lado, ambas tablas ya presentaban errores antes de su unificación, producto de un diseño deficiente y de la aparente falta de restricciones sobre los datos ingresados. Esta causa está asociada a los problemas P6, P9, P12, P13, P14 y P15. Dado que estas fallas impactan directamente en la estructura y confiabilidad del sistema, se consideran de prioridad alta.
+
+Finalmente, una fuente adicional de errores es la presencia de errores de tipeo, derivados del ingreso manual de datos. Estos se reflejan en los problemas P3, P4, P5 y P7, y se consideran de prioridad baja.
+
+
+
+
+
+\section{Plan de mejora}
+\label{fase3_plan_de_mejora}
+
+Siguiendo el principio de que toda reingeniería o modificación de procesos debe orientarse a corregir y prevenir errores, procurando mantener la mayor calidad de datos posible a futuro, la mejora principal propuesta consiste en una reestructuración de la base de datos. La nueva estructura se presenta en la \autoref{NewBaseNL}.
+
+Esta nueva base fue diseñada con el objetivo de normalizar formatos y nombres, evitar redundancias y reducir al mínimo el ingreso manual de datos por parte del usuario, con el fin de mitigar errores de tipeo. 
+
+Además, se incorporan restricciones de integridad y de dominio que permiten controlar la validez de los datos ingresados, mejorando la consistencia general del sistema.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=0.8\linewidth]{Fase 3/Nueva base propuesta.pdf}
+    }
+    \caption{Estructura de la nueva base de datos propuesta}
+    \label{NewBaseNL}
+\end{figure}
+
+Para reducir aún más el ingreso manual, se propone el uso de diccionarios o listas de selección para campos como ciudades, géneros, autores y editoriales, permitiendo la introducción manual únicamente en los casos en que los valores no se encuentren previamente cargados.
+
+Respecto a los datos ya existentes que presentan errores o formatos diferentes al estándar (por ejemplo, nombres en minúscula), se recomienda implementar funciones automáticas de corrección y estandarización. Para aquellos registros con valores nulos o errores que no puedan corregirse automáticamente, será necesaria una revisión y corrección manual.
+
+Finalmente, se sugiere capacitar al personal encargado del ingreso y mantenimiento de los datos, a fin de garantizar el uso correcto del sistema. Asimismo, se recomienda establecer controles periódicos de calidad de datos, que permitan monitorizar el estado general de la base y tomar acciones correctivas cuando sea necesario.
+
+
+
+
+
+\section{Descripción del desarrollo del trabajo propuesto}
+
+Si bien no se implementó toda la Fase 3, se entiende que su desarrollo podría haberse llevado a cabo en conjunto con el cliente. 
+A continuación se propone un posible enfoque para su implementación:
+
+\begin{itemize}
+    \item \textbf{Validación del plan de mejora:} confirmar que las acciones propuestas están alineadas con los requerimientos de calidad definidos previamente y con los intereses del cliente.
+    
+    \item \textbf{Estimación de recursos:} calcular tiempo y costo necesarios para llevar adelante el plan de mejora evaluando  su viabilidad.
+    
+    \item \textbf{Alineación con el cliente:} mantener una comunicación con el cliente para asegurar que el plan validado responda sus necesidades.
+    
+    \item \textbf{Aplicación de mejoras :} ejecutar los distintos algoritmos propuestos (3.2.3). Para cada uno se evaluara el impacto sobre la calidad de los datos utilizando las métricas definidas en la Fase 2 como mecanismo de comparación y validación.
+\end{itemize}
+
+
+\section{Conclusiones de la fase 3}
+
+La fase 3 es el cierre del ciclo propuesto por CaDQM y si bien no se implementó de forma completa pudimos entender la importancia del mismo y sobre todo el porque de muchos elementos propuestos en fases  previas. 
+
+En este caso entendemos que es una etapa en la que es crucial la comunicación fluida con el cliente (si bien todas las etapas, en cierta forma, lo son) ya que es donde se cierra el proyecto y donde se dejan ver los resultados y quizá esto complica su implementación.
+
+Nos hubiera gustado poder atacar algunos de los puntos mencionados en esta fase (como la estimación o la aplicación de las soluciones propuestas) aunque logramos dejar en claro la forma en que lo haríamos.
+

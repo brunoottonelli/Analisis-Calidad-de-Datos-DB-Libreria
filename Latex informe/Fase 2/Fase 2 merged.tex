@@ -1,0 +1,65 @@
+\chapter{Fase 2 - Data Quality Assessment}
+\input{Fase 2/Fase 2 - ST4}
+\newgeometry{top=2.5cm, bottom=1.5cm, left=1.5cm, right=2.5cm}
+\input{Fase 2/Fase 2 - Modelo_calidad_contextual}
+\restoregeometry
+\input{Fase 2/fase 2 - ST5 y ST6}
+
+\section{Entradas y salidas de la Fase 2 completa}
+Como preparación para abordar la Fase 3 del modelo CaDQM, se presentan a continuación las entradas y salidas generales de la Fase 2.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte del análisis de requerimientos de usuarios (\ref{ST3_reqUsuarios})& Reporte de problemas de CD priorizados (\ref{ST4_problemas_priorizados})\\
+        \hline
+        Reporte del análisis de datos (\ref{ST2_SubsectionAnalisis}) & Modelo de CD (\ref{ST4_modelo_calidad_contextual})\\
+        \hline
+        Reporte de problemas de CD (\autoref{Problemas_ST2}) &  Especificación de la BD de metadatos de CD (\ref{Diseño_BDQ})\\
+        \hline
+        Modelo de Contexto (\ref{ST3_SubsectionContexto}) & Reporte de medición de la CD (\ref{ImplementacionMetodos})\\
+        \hline
+         & Modelo de contexto (\ref{Contexto_ST5})\\
+        \hline
+         & Reporte de evaluación de CD (\ref{ImplementacionMetodos})\\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+BD: Base de datos.
+
+
+
+
+
+\section{Descripción del desarrollo del trabajo}
+
+% forma de trabajo, herramientas usadas, desafíos enfrentados, etc.
+% resultados obtenidos en cada una de las actividades
+
+Siguiendo la metodología CaQDM en la fase 2 el primer paso fue repasar los problemas de calidad analizados en la fase 1 y poder identificar potenciales nuevos problemas. 
+
+ Una vez identificados, procedimos a asignar una prioridad a cada uno tomando en cuenta los requerimientos de calidad, las reglas de negocio, los requerimientos del sistema y las necesidades de filtrado del cliente.
+
+Luego definimos la estructura de la base de datos que usaríamos para almacenar las distintas dimensiones, factores, métricas, métodos, métodos aplicados y ejecuciones de las distintas metricas. 
+
+Una vez pronta la estructura de la base, procedimos a insertar todos los datos y a crear distintos procedimientos almacenados donde se encuentra la lógica de distintos algoritmos de los métodos aplicados. 
+Con la estructura pronta y los datos cargados solo restaba ejecutar los distintos métodos aplicados y almacenar los resultados.
+
+ Finalmente armamos el modelo de calidad con sus distintas métricas y métodos tomando en cuenta las prioridades de los problemas de calidad.
+
+\section{Conclusiones de la fase 2}
+
+ La implementación de la segunda fase del modelo CaDQM en este proyecto permitió establecer un enfoque estructurado para diagnosticar el estado actual de la calidad de los datos, considerando los problemas detectados y la prioridad asignada a cada uno.
+
+Mediante las distintas etapas logramos cuantificar la calidad de los datos mediante métricas especificas obtenidas analizando la realidad del problema. Luego aplicando dichas métricas y manejando distintos umbrales pudimos transformar estas métricas en distintas valoraciones de calidad importantes para ayudarnos a entender el estado de calidad de los datos.
+
+ Finalmente, logramos entender el origen de los posibles problemas de calidad que pueden presentar un conjunto de datos y, tomando en cuenta las distintas métricas métodos implementados junto a los umbrales que elegimos, pudimos obtener procedimientos que nos ayudarán a entender estado de la calidad de los datos estudiados de una forma fácil de entender y comunicar.

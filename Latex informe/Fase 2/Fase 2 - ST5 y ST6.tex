@@ -1,0 +1,399 @@
+\section{ST5: DQ Measurement}
+\subsection{Entradas y salidas}
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Reporte de problemas de CD priorizados (\ref{ST4_problemas_priorizados}) & Especificación de la BD de metadatos de CD (\ref{Diseño_BDQ})\\
+        \hline
+        Modelo de CD contextual (\ref{ST4_modelo_calidad_contextual}) & Reporte de medición de la CD (\ref{ImplementacionMetodos})\\
+        \hline
+         & Modelo de contexto (\ref{Contexto_ST5})\\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+\noindent CD: Calidad de datos.\\
+BD: Base de datos.
+
+
+
+\subsection{Diseño de la base de datos de metadatos de calidad}
+\label{Diseño_BDQ}
+
+La base de datos de metadatos se diseñó siguiendo el MER de la \autoref{MER_metadatos}, pensando en que todos los tipos de métricas implementadas y futuras métricas posibles pudieran ser almacenadas en ella.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=\textwidth]{Fase 2/MER_metadatos.pdf}
+    }
+    \caption{MER de la base de datos creada para almacenar los metadatos de calidad}
+    \label{MER_metadatos}
+\end{figure}
+
+
+
+\FloatBarrier
+
+\subsection{Implementación y ejecución de los métodos propuestos}
+Los métodos propuestos fueron implementados directamente en SQL y sus resultados se ejecutaron y almacenaron en la base de datos de metadatos de calidad.
+
+A continuación, se presenta un resumen de los resultados obtenidos en las tablas siguientes. Para destacar de forma más significativa los resultados de los métodos con granularidad a nivel de celda y fila, se muestran los porcentajes de resultados positivos, dado que dichos resultados son valores binarios.
+\label{ImplementacionMetodos}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3} % Aumenta el espacio entre filas
+\begin{tabular}{|p{4.5cm}|p{4.5cm}|p{4cm}|p{3cm}|}
+    \hline
+    \multicolumn{4}{|c|}{\cellcolor{blue!30} \textbf{Resultados para métodos con granularidad columna y tabla}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{NombreTabla} & \textbf{Atributo} & \textbf{ID Método Aplicado} & \textbf{\% Valor=1} \\
+    \hline
+    NL\_BOOKS & PublisherDate & MA\_date\_format & 72.29 \\
+    \hline
+    NL\_RATINGS & review\_time & MA\_date\_format & 72.29 \\
+    \hline
+    NL\_BOOKS & ISBN & MA\_missing\_rating\_books & 87.38 \\
+    \hline
+    NL\_USERS & Age & MA\_check\_edades & 5.13 \\
+    \hline
+    NL\_BOOKS & Price & MA\_check\_price & 9.86 \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3} % Aumenta el espacio entre filas
+\begin{tabular}{|p{4cm}|p{4cm}|p{3cm}|p{4cm}|}
+    \hline
+    \multicolumn{4}{|c|}{\cellcolor{blue!30} \textbf{Resultados para métodos con granularidad columna y tabla}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Tabla} & \textbf{Columna} & \textbf{Valor} & \textbf{ID Método Aplicado} \\
+    \hline
+    NL\_BOOKS & ISBN & 0.04 & MA\_duplicate\_ratio \\
+    \hline
+    NL\_BOOKS & AuthorID & 0.53 & MA\_duplicate\_ratio \\
+    \hline
+    NL\_BOOKS & PublisherID & 0.94 & MA\_duplicate\_ratio \\
+    \hline
+    NL\_USERS & ID & 0.61 & MA\_duplicate\_ratio \\
+    \hline
+    NL\_USERS & ID & 0.17 & MA\_contar\_nulls \\
+    \hline
+    NL\_BOOKS & AuthorID & 0.08 & MA\_duplicated\_authors \\
+    \hline
+    NL\_BOOKS & - & 0.16 & MA\_check\_RN1 \\
+    \hline
+\end{tabular}
+}
+\end{center}
+
+
+
+
+
+
+
+
+\subsection{Contexto}
+\label{Contexto_ST5}
+\subsubsection{Nuevos componentes de contexto}
+Se presenta a continuación la lista completa de componentes de contexto. En este caso, se agrega como nueva componente de contexto la base de datos diseñada junto a los metadatos de calidad de datos cargados en ella.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{3cm} | p{11cm} |} % Ajusta el tamaño de las columnas
+        \hline % Línea superior
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Componentes de Contexto}} \\
+        \hline % Línea debajo de la celda "Componentes de Contexto"
+        \textbf{Dominio} & D: Libros. \\
+        \hline
+        \textbf{Fuentes de datos} & Datos obtenidos de ambas librerías que se fusionarán y los proporcionados por el cliente sobre sus realidades. \\
+        \hline
+        \textbf{Tipos de usuario} & U1: Administrador. \\
+                                  & U2: Publicista digital. \\
+                                  & U3: Analista de datos. \\
+        \hline
+        \textbf{Tareas} & T1: Gestión. \\
+                        & T2: Análisis. \\
+                        & T3: Consulta. \\
+        % \hline
+        % \textbf{Otros datos?} & Datos relacionados con data at hand. \\
+        \hline
+        \textbf{Reglas de negocio}  & RN1: Cada libro deberá tener asociado un ISBN, un título, al menos un autor y un editor. \\
+                                    & RN2: El atributo ISBN en NL\_Books debe ser único a cada libro. \\
+                                    & RN3: El atributo Price en NL\_Books debe ser un real positivo. \\
+                                    & RN4: El atributo Age en NL\_Users debe ser un entero positivo. \\
+                                    & RN5: El atributo ID en NL\_Users debe ser único y no vacío. \\
+        
+        \hline
+        \textbf{Requerimientos}              & RQ1: Frescura de datos: la base debe actualizarse todos los viernes. \\
+        \textbf{de calidad}                  & RQ2: Al menos el 80\% de los usuarios que califican los libros deben ser mayores de 18 años. \\
+                                             & RQ3: Al menos el 95\% de los libros deben cumplir simultáneamente con los siguientes requisitos: contar con un ISBN, tener el título correctamente escrito y que el nombre del autor incluya al menos un nombre y un apellido. \\
+                                             & RQ4: Al menos el 60\% de los libros tengan al menos un score mayor o igual a 5. \\
+                                             & RQ5: La librería pretende tener al menos 500 libros y poseer al menos el 20\% de la lista de los 100 mejores libros de Goodreads. \\
+                                             & RQ6: Los libros deben contar con fecha de publicación. \\
+                                             & RQ7: Los libros deben tener editorial.\\
+                                             & RQ8: Los libros deben tener asignado un valor de score.\\
+                                             & RQ9: los nombres de las editoriales deben estar estandarizados.\\
+                                             & RQ10: Las reglas de formato para nombres (autores, libros, editoriales) son: primera letra del nombre propio en mayúsculas y sin punto al final.\\
+                                             & RQ11: El formato para las fechas será dd/mm/aaaa.\\
+                                             
+        \hline
+        \textbf{Requerimientos del sistema} & RS1: Los tiempos de respuesta del sitio Web de la NL no pueden superar los 3 segundos. \\
+        
+        \hline
+        \textbf{Necesidades de}    & F1: Libros por fecha (en particular, del año actual). \\
+        \textbf{filtrado}                   & F2: Libros por editorial. \\
+                                            & F3: Top de libros según su score. \\
+        \hline
+        \textbf{Metadatos de}    & BDQ: Base de datos de metadatos de calidad de datos.  \\
+        \textbf{calidad}         &                                                        \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+\subsubsection{Contexto}
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{6cm} | p{2cm} | p{2cm} |p{2cm} | p{2cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{5}{|c|}{\cellcolor{blue!30} \textbf{Contexto}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Componente de contexto} & \textbf{Todos los usuarios} & \textbf{U1: Administrador} &  \textbf{U2: Publicista} &  \textbf{U3: Analista}\\
+        \hline
+        Dominio & D & & &\\
+        \hline
+        Tareas & T3 & T1 & T2 &\\
+        \hline
+        Reglas de negocio & RN1, RN2, RN3, RN4, RN5 & & &\\
+        \hline
+        Requerimientos de sistema & RS1 & & &\\
+        \hline
+        Requerimientos de calidad de datos & RQ5, RQ9, RQ10, RQ11 & RQ6, RQ7, RQ8 & RQ1, RQ2, RQ4 & RQ3\\
+        \hline
+        Necesidades de filtrado &  & F1, F2, F3 & & \\
+        \hline
+        Metadatos &   & & &\\
+        \hline
+        Metadatos de calidad de datos & BDQ & & & \\
+        \hline
+        Otros datos &  & & & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+
+
+\section{ST6: DQ Assessment}
+\subsection{Entradas y salidas}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{8cm} | p{8cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Especificación de la BD de metadatos de CD (\ref{Diseño_BDQ}) & Reporte de evaluación de CD (\ref{ImplementacionMetodos})\\
+        \hline
+        Reporte de medición de la CD (\ref{ImplementacionMetodos}) & \\
+        \hline
+        Modelo de contexto (\ref{Contexto_ST5}) & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+\noindent CD: Calidad de datos.\\
+BD: Base de datos.
+
+\subsection{Definición de umbrales de evaluación}
+\label{def_umb}
+Al momento de definir los umbrales para las distintas medidas de calidad, se consideraron las componentes contextuales, especialmente los requerimientos de los usuarios y las reglas de negocio, procurando al mismo tiempo mantener coherencia con el propósito específico de cada métrica.
+
+Bajo esta línea, se establecieron tres criterios distintos, los cuales se presentan en las Tablas \ref{tabla_criterio_estandar}, \ref{tabla_criterio_estricto} y \ref{tabla_criterio_binario}. La \autoref{tabla_criterios_metodos} detalla qué criterio fue aplicado en cada caso, según el método considerado.
+
+Los métodos que producen resultados binarios fueron evaluados con el criterio \textit{binario}. Para los métodos con resultados graduados, se distinguieron dos casos: aquellos sugeridos por una regla de negocio o requerimiento con umbral ya definido, y los que no. Para los del primer caso, se optó por utilizar el criterio \textit{estándar estricto}, mientras que para los del segundo se utilizó el estándar, siguiendo la escala directa o inversa según la naturaleza de dichos métodos.
+
+
+
+\begin{table}[H]
+\centering
+\refstepcounter{table}
+\label{tabla_criterio_estandar}
+% \resizebox{0.9\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+    \hline
+    \multicolumn{3}{|c|}{\cellcolor{blue!30} \textbf{Tabla \thetable: Criterio estándar}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Concepto} & \textbf{Rango (directo)} & \textbf{Rango (inverso)} \\
+    \hline
+    Malo & [0, 0.30) & [0.70, 1) \\
+    \hline
+    Bueno & [0.30, 0.60) & [0.40, 0.70) \\
+    \hline
+    Muy bueno & [0.60, 0.90) & [0.10, 0.40) \\
+    \hline
+    Excelente & [0.90, 1] & [0, 0.10) \\
+    \hline
+\end{tabular}
+% }
+\end{table}
+
+
+
+\begin{table}[H]
+\centering
+\refstepcounter{table}
+\label{tabla_criterio_estricto}
+% \resizebox{0.9\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+    \hline
+    \multicolumn{3}{|c|}{\cellcolor{blue!30} \textbf{Tabla \thetable: Criterio estándar estricto}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Concepto} & \textbf{Directo} & \textbf{Inverso} \\
+    \hline
+    Deficiente & (0, 0.30] & [0.70, 1] \\
+    \hline
+    Malo & (0.30, 0.60] & [0.40, 0.70) \\
+    \hline
+    Aceptable & (0.60, 0.75] & [0.25, 0.40) \\
+    \hline
+    Bueno & (0.75, 0.90] & [0.10, 0.25) \\
+    \hline
+    Excelente & (0.90, 1] & [0, 0.10) \\
+    \hline
+\end{tabular}
+% }
+\end{table}
+
+
+
+% \vspace{0.5cm}
+
+\begin{table}[H]
+\centering
+\refstepcounter{table}
+\label{tabla_criterio_binario}
+% \resizebox{0.6\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{3cm}|p{3cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Tabla \thetable: Criterio binario}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Concepto} & \textbf{Valor} \\
+    \hline
+    Deficiente & 0 \\
+    \hline
+    Excelente & 1 \\
+    \hline
+\end{tabular}
+% }
+\end{table}
+
+% \vspace{0.5cm}
+
+\begin{table}[H]
+\centering
+\refstepcounter{table}
+\label{tabla_criterios_metodos}
+% \resizebox{0.95\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{7cm}|p{5cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Tabla \thetable: Criterios asociados a cada método}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Método} & \textbf{Criterio} \\
+    \hline
+    metodo\_check\_ISBN & Binario \\
+    \hline
+    metodo\_check\_PublisherID & Binario \\
+    \hline
+    metodo\_check\_edades & Binario \\
+    \hline
+    metodo\_duplicated\_authors & Estándar (inverso) \\
+    \hline
+    metodo\_date\_format & Binario \\
+    \hline
+    metodo\_duplicate\_ratio & Estándar estricto (inverso) \\
+    \hline
+    metodo\_contar\_nulls & Estándar estricto (inverso) \\
+    \hline
+    metodo\_check\_RN1 & Estándar estricto (inverso) \\
+    \hline
+    metodo\_consistencia\_ratings & Binario \\
+    \hline
+    metodo\_consistencia\_fechas & Binario \\
+    \hline
+    metodo\_missing\_rating\_books & Binario \\
+    \hline
+\end{tabular}
+% }
+\end{table}
+
+
+
+\subsection{Ejecución de los umbrales de evaluación}
+
+Dados los criterios elegidos en la \autoref{def_umb}, se aplicaron y almacenaron los umbrales mediante consultas SQL y los resultados de los mismos pueden apreciarse en las Figuras \ref{fig:TortasResultados} y \ref{fig:BarrasResultados}
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=\linewidth]{Fase 2/todas_las_tortas.pdf}
+    }
+    \caption{Gráficos de tortas con los resultados obtenidos para los métodos con granularidad celda y fila}
+    \label{fig:TortasResultados}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=\linewidth]{Fase 2/todas_las_barras.pdf}
+    }
+    \caption{Gráficos de barras con los resultados obtenidos para los métodos con granularidad columna y tabla}
+    \label{fig:BarrasResultados}
+\end{figure}
+
+
+A partir de estas gráficas, se puede ver que la calidad de los datos es muy dispar dependiendo de la métrica que se analice. En particular, se destaca que el método encargado de medir el desempeño de la regla de negocios RN1 dio un resultado favorable, mientras que hay un problema importante en lo que refiere a los ID de los usuarios. 
+
+En cuanto a los resultados de métodos con granularidad celda o fila, sorprende la gran cantidad de resultados negativos encontrados, posiblemente debido a la unión de dos bases de datos con atributos muy diferentes.
+
+\subsection{Contexto}
+
+Durante esta etapa no se identificaron nuevos componentes de contexto, sino que solo se modificaron algunos existentes (BDQ), por lo que el contexto completo sigue siendo el presentado en la sección~\ref{Contexto_ST5}.

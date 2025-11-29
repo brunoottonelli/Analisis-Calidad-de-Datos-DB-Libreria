@@ -1,0 +1,883 @@
+\chapter{Fase 1 - Data Quality Planning}
+
+\section{ST1: Elicitation}
+
+
+\subsection{Entradas y salidas}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        & Base de datos integrada (Data at hand) (\ref{ST1_DataAtHand}) \\
+        \hline
+        & Reporte con problemas de CD (\ref{ST1_SubsectionProblemasCD}) \\
+        \hline
+        & Modelo de contexto (\ref{ST1_SubsectionContexto}) \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+
+
+
+\subsection{Descripción de la realidad}
+El análisis de la calidad de los datos se centrará en información relacionada con libros, proveniente de dos librerías (L1 y L2) que se fusionarán en una nueva librería NL. 
+
+Los encargados de la librería reportan saber de la existencia de muchos problemas de calidad (sin explicitar cuáles) y que éstos se verán potenciados luego de la fusión. Es por esto que la situación genera la necesidad de evaluar la calidad de los datos en la base resultante de la integración de los datos proporcionados por ambas librerías.
+
+Los datos proporcionados por la librería L1 estan distribuidos en dos archivos CSV, uno con detalles de los libros y otros con detalles de las reviews sobre los libros. Ambas tablas se relacionan entre si mediante el atributo \textit{Title}.
+\\
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Tablas de la librería L1}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Nombre de tabla} & \textbf{Atributos} \\
+        \hline
+        Books\_rating & `Id', `Title', `Price', `User\_id', `profileName', `review/helpfulness', `review/score', `review/time', `review/summary', `review/text' \\
+        \hline
+        books\_data & `Title', `description', `authors', `image', `previewLink', `publisher', `publishedDate', `infoLink', `categories', `ratingsCount' \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\vspace{1em}
+
+De la librería L2 se obtienen los datos en tres archivos CSV, uno con detalles de los libros, otro con detalle de los usuarios y el último con detalle de las valoraciones de dichos usuarios sobre los libros. Entre ellas se relacionan mediante los atributos \textit{ISBN}, que es un identificador para los libros, y \textit{User-ID}, que es un identificador para los usuarios.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Tablas de la librería L2}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Nombre de tabla} & \textbf{Atributos} \\
+        \hline
+        Books & `ISBN', `Book-Title', `Book-Author', `Year-Of-Publication', `Publisher', `Image-URL-S', `Image-URL-M', `Image-URL-L' \\
+        \hline
+        Users & `User-ID', `Location', `Age' \\
+        \hline
+        Ratings & `User-ID', `ISBN', `Book-Rating' \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\subsection{Contexto}
+\label{ST1_SubsectionContexto}
+
+\subsubsection{Identificación de componentes del contexto}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Ajusta el tamaño de las columnas
+        \hline % Línea superior
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Componentes de Contexto}} \\
+        \hline % Línea debajo de la celda "Componentes de Contexto"
+        \textbf{Dominio} & D: Libros. \\
+        \hline
+        \textbf{Fuentes de datos} & Datos obtenidos de ambas librerías que se fusionarán y los proporcionados por el cliente sobre sus realidades. \\
+        \hline
+        \textbf{Tipos de usuario} & U1: Administrador. \\
+                                  & U2: Publicista digital. \\
+                                  & U3: Analista de datos. \\
+        \hline
+        \textbf{Tareas} & T1: Gestión. \\
+                        & T2: Análisis. \\
+                        & T3: Consulta. \\
+        % \hline
+        % \textbf{Otros datos?} & Datos relacionados con data at hand. \\
+        \hline
+        \textbf{Reglas de negocio} & RN1: Cada libro deberá tener asociado un ISBN, un título, al menos un autor y un editor. \\
+        \hline
+        \textbf{Requerimientos de calidad} & RQ1: Frescura de datos: la base debe actualizarse todos los viernes. \\
+                                             & RQ2: Al menos el 80\% de los usuarios que califican los libros deben ser mayores de 18 años. \\
+                                             & RQ3: Al menos el 95\% de los libros deben cumplir simultáneamente con los siguientes requisitos: contar con un ISBN, tener el título correctamente escrito y que el nombre del autor incluya al menos un nombre y un apellido. \\
+                                             & RQ4: Al menos el 60\% de los libros tengan al menos un score mayor o igual a 5. \\
+                                             & RQ5: La librería pretende tener al menos 500 libros y poseer al menos el 20\% de la lista de los 100 mejores libros de Goodreads. \\
+                                             & RQ6: Los libros deben contar con fecha de publicación. \\
+                                             & RQ7: Los libros deben tener editorial.\\
+                                             & RQ8: Los libros deben tener asignado un valor de score.\\
+                                             
+        \hline
+        \textbf{Requerimientos del sistema} & RS1: Los tiempos de respuesta del sitio Web de la NL no pueden superar los 3 segundos. \\
+        \hline
+        \textbf{Problemas de calidad ya reportados} & Ninguno en particular. \\
+        \hline
+        \textbf{Necesidades de filtrado} & F1: Libros por fecha (en particular, del año actual). \\
+                                          & F2: Libros por editorial. \\
+                                          & F3: Top de libros según su score. \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+Todos los componentes de contexto surgen de analizar la realidad planteada por el cliente (letra proporcionada para la entrega), sin embargo, los requerimientos RQ6, RQ7 y RQ8 no están detallados explícitamente, sino que surgen de las necesidades de filtrado para que los usuarios puedan realizar correctamente sus labores.
+
+\subsubsection{Contexto}
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{6cm} | p{2cm} | p{2cm} |p{2cm} | p{2cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{5}{|c|}{\cellcolor{blue!30} \textbf{Contexto}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Componente de contexto} & \textbf{Todos los usuarios} & \textbf{U1: Administrador} &  \textbf{U2: Publicista} &  \textbf{U3: Analista}\\
+        \hline
+        Dominio & D & & &\\
+        \hline
+        Tareas & T3 & T1 & T2 &\\
+        \hline
+        Reglas de negocio & RN1 & & &\\
+        \hline
+        Requerimientos de sistema & RS1 & & &\\
+        \hline
+        Requerimientos de calidad de datos & RQ5 & RQ6, RQ7, RQ8 & RQ1, RQ2, RQ4 & RQ3\\
+        \hline
+        Necesidades de filtrado &  & F1, F2, F3 & & \\
+        \hline
+        Metadatos &   & & &\\
+        \hline
+        Metadatos de calidad de datos &  & & & \\
+        \hline
+        Otros datos &  & & & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\subsection{Primeros problemas de calidad de datos} 
+\label{ST1_SubsectionProblemasCD}
+
+Al momento de la integración de la base de datos se identifica como problema de calidad que los datos provenientes de las librerías no contienen los mismos atributos, mencionamos algunos de los ejemplos más importantes:
+\begin{itemize}
+    \item En el caso de la librería 1 la información referente a libros (\textit{booksData}) no contiene el ISBN que identifica al mismo y solo aparece si los libros poseen una entrada en el libro de ratings (\textit{booksRating}).
+    \item  La librería 2 tiene identificado a los usuarios con un entero autogenerado y solo registra la edad y ubicación del mismo mientras que la librería 1 registra mas datos (como el nombre) pero no registra la edad del mismo.
+\end{itemize}
+
+\subsection{Data at hand}
+\label{ST1_DataAtHand}
+El \textit{Data at hand} sobre el que se evaluará la calidad será la base de datos resultante de integrar las bases existentes de ambas librerías. Para ello, se identificaron atributos de ambas bases que representen lo mismo y se ideó una nueva estructura en la que se presentará la información, sin modificar los datos existentes.
+
+La base de datos integrada para la librería NL consta de las tablas y estructura que se muestran en la \autoref{fig:BaseNL}.
+
+
+% \begin{figure}%[h]
+%     \centering
+%     \makebox[\textwidth][c]{%
+%         \includegraphics[width=\textwidth]{Fase 1/Libros_recortada_2.png}
+%     }
+%     \caption{Estructura de la base de datos creada}
+%     \label{fig:BaseNL}
+% \end{figure}
+
+\begin{figure}[htpb]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.9\textwidth]{Fase 1/unificacion.pdf}
+    }
+    \caption{Estructura de la base de datos creada}
+    \label{fig:BaseNL}
+\end{figure}
+
+
+
+% \newpage
+
+La migración de las tablas de L1 y L2 a NL se hizo como se muestra en las tablas de la presente sección, donde la columna izquierda son los atributos en las tablas originales de L1 y L2, y la columna derecha es en qué atributos se incluyeron de la base de NL.
+\\
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L1\_bookData → NL\_BOOKS}
+\label{Migracion_L1_NL}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Books}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L1\_bookData)} & \textbf{Salidas (NL\_BOOKS)} \\
+    \hline
+    ISBN & NL\_Ratings.ID (relación con BookTitle) \\
+    \hline
+    Title & BookTitle \\
+    \hline
+    description & Description \\
+    \hline
+    authors & AuthorID \\
+    \hline
+    image & ImageURL\_S \\
+    \hline
+    previewLink & PreviewLink \\
+    \hline
+    publisher & PublisherID \\
+    \hline
+    publishedDate & PublisherDate \\
+    \hline
+    infoLink & InfoLink \\
+    \hline
+    categories & Categories \\
+    \hline
+    ratingsCount & RatingCount \\
+    \hline
+    Price & Price \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L1\_booksRating → NL\_USERS}
+\label{Migracion_L1Rating_NLUsers}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Users}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L1\_bookRating)} & \textbf{Salidas (NL\_USERS)} \\
+    \hline
+    User\_ID & ID \\
+    \hline
+    profileName & Name \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L1\_booksRatings → NL\_RATINGS}
+\label{Migracion_L1Ratings_NLRatings}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Users}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L1\_booksRatings)} & \textbf{Salidas (NL\_RATINGS)} \\
+    \hline
+    Title & BookTitle \\
+    \hline
+    Price & Price \\
+    \hline
+    User\_id & ID \\
+    \hline
+    profileName & Name \\
+    \hline
+    review\_helpfulness & review\_helpfulness \\
+    \hline
+    review\_score & review\_score \\
+    \hline
+    review\_time & review\_time \\
+    \hline
+    review summary & review\_summary \\
+    \hline
+    review text & review\_text \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L2\_books → NL\_BOOKS}
+\label{Migracion_L2Books_NLBooks}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Ratings}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L2\_books)} & \textbf{Salidas (NL\_BOOKS)} \\
+    \hline
+    ISBN & ISBN \\
+    \hline
+    Book-Title & BookTitle \\
+    \hline
+    Book-Author & AuthorID \\
+    \hline
+    Year-Of-Publication & PublisherDate \\
+    \hline
+    Publisher & PublisherID \\
+    \hline
+    Image-URL-S & ImageURL\_S \\
+    \hline
+    Image-URL-M & ImageURL\_M \\
+    \hline
+    Image-URL-L & ImageURL\_L \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L2\_users → NL\_USERS}
+\label{Migracion_L2Users_NLUsers}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L2\_users)} & \textbf{Salidas (NL\_USERS)} \\
+    \hline
+    User-ID & ID \\
+    \hline
+    Location & Location \\
+    \hline
+    Age & Age \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Migración: L2\_ratings → NL\_RATINGS}
+\label{Migracion_L2Ratings_NLRatings}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{6cm}|p{10cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Entradas (L2\_ratings)} & \textbf{Salidas (NL\_RATINGS)} \\
+    \hline
+    User-ID & User\_ID \\
+    \hline
+    ISBN & ISBN \\
+    \hline
+    Book-Rating & review\_score \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+\FloatBarrier
+
+
+
+\section{ST2: Data Analysis}
+
+\subsection{Entradas y salidas}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Base de datos integrada (Data at hand) (\ref{ST1_DataAtHand}) & Reporte de análisis de datos (\ref{ST2_SubsectionAnalisis}) \\
+        \hline
+        Reporte con problemas de CD (\ref{ST1_SubsectionProblemasCD}) & Reporte con problemas de CD (\autoref{Problemas_ST2}) \\
+        \hline
+        Modelo de contexto (\ref{ST1_SubsectionContexto}) & Modelo de contexto (\ref{ST2_SubsectionContexto}) \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+
+
+
+\subsection{Reporte del análisis de datos}
+\label{ST2_SubsectionAnalisis}
+
+\subsubsection{Descripción de las herramientas y técnicas utilizadas para el data profiling}
+En el proceso de data profiling, se utilizaron diversas herramientas según cada etapa del flujo de trabajo:
+\begin{itemize}
+    \item \textit{Python} y \textit{Pandas} para el preprocesamiento, formateo de los archivos en formato .csv y análisis de los datos.
+    \item \textit{DBDiagram.io} para el análisis y diseño de la estructura de la base de datos, facilitando su visualización y validación.
+    \item \textit{SQL Server} para la creación y gestión de la base de datos, consolidando los datos unificados.
+\end{itemize}
+
+
+% \newpage
+
+\subsubsection{Data profiling}
+\label{ST2_DataProfiling}
+
+Para analizar los datos del data at hand, el primer paso fue un estudio estadístico, que se resume en las siguientes tablas:
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=\textwidth]{Fase 1/NL_Books.png}
+    }
+    % \caption{Estructura de la base de datos creada}
+    \label{fig:NL_Books}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=\textwidth]{Fase 1/NL_Users.png}
+    }
+    % \caption{Estructura de la base de datos creada}
+    \label{fig:NL_Users}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=\textwidth]{Fase 1/NL_Ratings.png}
+    }
+    % \caption{Estructura de la base de datos creada}
+    \label{fig:NL_Ratings}
+\end{figure}
+
+En ellas se puede apreciar una gran cantidad de nulos y duplicados. Muchos de estos ya existían previamente en los datos originales proporcionados por ambas librerias, pero, sobre todo en el caso de los nulos, muchos se generaron debido a la integración, ya que ambas bases de datos poseian distintos atributos.
+
+A continuación, se muestra de manera gráfica y porcentual los valores nulos y repetidos:
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{Fase 1/NL_graf.png}
+%     \caption{Gráfica de los valores nulos y repetidos}
+%     \label{fig:NLgraf}
+% \end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Fase 1/Nulls NL_Users.png}
+    \caption{Gráfica de los valores nulos en la tabla \texttt{NL\_Users}}
+    \label{fig:NLusers}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Fase 1/Nulls NL_Books.png}
+    \caption{Gráfica de los valores nulos en la tabla \texttt{NL\_Books}}
+    \label{fig:NLbooks}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Fase 1/Nulls NL_Ratings.png}
+    \caption{Gráfica de los valores nulos en la tabla \texttt{NL\_Ratings}}
+    \label{fig:NLratings}
+\end{figure}
+
+\FloatBarrier
+
+
+
+
+\subsubsection{Listado de los problemas de calidad detectados}
+Durante la ejecución del \textit{Data Profiling} se detectaron múltiples errores sobre los datos, los cuales se detallan en la siguiente tabla junto a los ya reportados durante la ST1.
+
+Cabe destacar que, si bien no fueron detectados explícitamente, se consideró oportuno incluir los errores P14 y P15 ya que es de interés del equipo de trabajo medirlos debido a que podrían afectar la calidad y coherencia de los datos.
+
+
+
+\begin{table}[H]
+\centering
+\caption{Problemas detectados en la Calidad de los Datos}
+\label{Problemas_ST2}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{5cm}|p{11.5cm}|}
+    \hline
+    \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Problemas detectados en la Calidad de los Datos}} \\
+    \hline
+    \rowcolor{blue!15}
+    \textbf{Campo} & \textbf{Problema de calidad} \\
+    \hline
+    NL\_Books.ISBN & P1: Entradas no respetan el formato ISBN ya que algunos están en formato ASID. \\
+    \hline
+    NL\_Books.PublisherDate & P2: Las fechas tienen distinto formato. \\
+    \hline
+    NL\_Books.PublisherID & P3: Mismo publisher escrito de forma distinta. \\
+    \hline
+    NL\_Books.Title & P4: Títulos mal escritos. \\
+    \hline
+    NL\_Books.AuthorID & P5: Mismo autor escrito de forma distinta. \\
+    \hline
+    NL\_USERS.Age & P6: Valores de edad poco coherentes (por ejemplo 0). \\
+    \hline
+    NL\_USERS.Location & P7: Ciudades mal escritas. \\
+    \hline
+    NL\_RATINGS.review\_time & P8: Formato de fecha/hora inconsistente. \\
+    \hline
+    NL\_RATINGS.review\_score & P9: Valores no numéricos en la puntuación. \\
+    \hline
+    NL\_RATINGS.review\_score & P10: Los valores importados entre L1 y L2 manejan distintas escalas (L1 puntúa de 0 a 5 y L2 de 0 a 10). \\
+    \hline
+    Base de datos & P11: Gran cantidad de nulos en muchos de los atributos. \\
+    \hline
+    NL\_Books & P12: No hay campo de rating promedio del libro (podría calcularse). \\
+    \hline
+    NL\_RATINGS.Helpfullness & P13: Este atributo en realidad debería ser dos atributos diferentes: cantidad de votaciones en esa review y cantidad de votaciones que consideraron útil esa review. \\
+    \hline
+    NL\_Books.AuthorID & P14: Libros indican autores de forma distinta cuando tienen más de uno (dos libros con autores \{A,B\} y \{B,A\} deben considerarse con los mismos autores). \\
+    \hline
+    NL\_RATINGS.review\_score & P15: Podría haber valores fuera del rango 0 a 10. \\
+    % \hline
+    % Base de datos & P16: Gran cantidad de nulos en muchos de los atributos, incluyendo claves. \\
+    \hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Contexto}
+\label{ST2_SubsectionContexto}
+
+\subsubsection{Nuevos componentes de contexto}
+Dado que se busca a futuro tener una base de datos con un funcionamiento correcto y siguiendo la línea de los problemas de calidad detectados, durante el análisis de datos se identificaron los componentes de contexto RN2, RN3, RN4 y RN5.
+
+Se presenta a continuación la lista completa de componentes de contexto, incluyendo las nuevas componentes mencionadas.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{3cm} | p{11cm} |} % Ajusta el tamaño de las columnas
+        \hline % Línea superior
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Componentes de Contexto}} \\
+        \hline % Línea debajo de la celda "Componentes de Contexto"
+        \textbf{Dominio} & D: Libros. \\
+        \hline
+        \textbf{Fuentes de datos} & Datos obtenidos de ambas librerías que se fusionarán y los proporcionados por el cliente sobre sus realidades. \\
+        \hline
+        \textbf{Tipos de usuario} & U1: Administrador. \\
+                                  & U2: Publicista digital. \\
+                                  & U3: Analista de datos. \\
+        \hline
+        \textbf{Tareas} & T1: Gestión. \\
+                        & T2: Análisis. \\
+                        & T3: Consulta. \\
+        % \hline
+        % \textbf{Otros datos?} & Datos relacionados con data at hand. \\
+        \hline
+        \textbf{Reglas de negocio}  & RN1: Cada libro deberá tener asociado un ISBN, un título, al menos un autor y un editor. \\
+                                    & RN2: El atributo ISBN en NL\_Books debe ser único a cada libro. \\
+                                    & RN3: El atributo Price en NL\_Books debe ser un real positivo. \\
+                                    & RN4: El atributo Age en NL\_Users debe ser un entero positivo. \\
+                                    & RN5: El atributo ID en NL\_Users debe ser único y no vacío. \\
+        
+        \hline
+        \textbf{Requerimientos}              & RQ1: Frescura de datos: la base debe actualizarse todos los viernes. \\
+        \textbf{de calidad}                  & RQ2: Al menos el 80\% de los usuarios que califican los libros deben ser mayores de 18 años. \\
+                                             & RQ3: Al menos el 95\% de los libros deben cumplir simultáneamente con los siguientes requisitos: contar con un ISBN, tener el título correctamente escrito y que el nombre del autor incluya al menos un nombre y un apellido. \\
+                                             & RQ4: Al menos el 60\% de los libros tengan al menos un score mayor o igual a 5. \\
+                                             & RQ5: La librería pretende tener al menos 500 libros y poseer al menos el 20\% de la lista de los 100 mejores libros de Goodreads. \\
+                                             & RQ6: Los libros deben contar con fecha de publicación. \\
+                                             & RQ7: Los libros deben tener editorial.\\
+                                             & RQ8: Los libros deben tener asignado un valor de score.\\        
+        \hline
+        \textbf{Requerimientos del sistema} & RS1: Los tiempos de respuesta del sitio Web de la NL no pueden superar los 3 segundos. \\
+        
+        \hline
+        \textbf{Necesidades de}    & F1: Libros por fecha (en particular, del año actual). \\
+        \textbf{filtrado}                   & F2: Libros por editorial. \\
+                                            & F3: Top de libros según su score. \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\subsubsection{Contexto}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{6cm} | p{2cm} | p{2cm} |p{2cm} | p{2cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{5}{|c|}{\cellcolor{blue!30} \textbf{Contexto}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Componente de contexto} & \textbf{Todos los usuarios} & \textbf{U1: Administrador} &  \textbf{U2: Publicista} &  \textbf{U3: Analista}\\
+        \hline
+        Dominio & D & & &\\
+        \hline
+        Tareas & T3 & T1 & T2 &\\
+        \hline
+        Reglas de negocio & RN1, RN2, RN3, RN4, RN5 & & &\\
+        \hline
+        Requerimientos de sistema & RS1 & & &\\
+        \hline
+        Requerimientos de calidad de datos & RQ5 & RQ6, RQ7, RQ8 & RQ1, RQ2, RQ4 & RQ3\\
+        \hline
+        Necesidades de filtrado &  & F1, F2, F3 & & \\
+        \hline
+        Metadatos &   & & &\\
+        \hline
+        Metadatos de calidad de datos &  & & & \\
+        \hline
+        Otros datos &  & & & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\section{ST3: User requirements analysis}
+
+\subsection{Entradas y salidas}
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        Base de datos integrada (Data at hand) (\ref{ST1_DataAtHand}) & Reporte de análisis de requerimientos de usuarios (\ref{ST3_reqUsuarios}) \\
+        \hline
+        Reporte con problemas de CD (\autoref{Problemas_ST2}) & Reporte con problemas de CD  (\autoref{Problemas_ST2}) \\
+        \hline
+        Modelo de contexto (\ref{ST2_SubsectionContexto}) & Modelo de contexto (\ref{ST3_SubsectionContexto}) \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+
+
+
+\subsection{Reporte de requerimientos de usuario}
+\label{ST3_reqUsuarios}
+
+En esta etapa, luego de realizadas consultas al cliente, se identificaron los siguientes requerimientos de calidad.
+% RQ9: los nombres de las editoriales deberían estar estandarizados.
+% RQ10: Las reglas de formato para nombres (autores, libros, editoriales) son: primera letra del nombre propio en mayúsculas y sin punto al final.
+% RQ11: El formato para las fechas será dd/mm/aaaa.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Ajusta el tamaño de las columnas
+        \hline % Línea superior
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Nuevas componentes de Contexto}} \\
+        \hline % Línea debajo de la celda "Componentes de Contexto"
+        \textbf{Requerimientos de calidad}  & RQ9: los nombres de las editoriales deben estar estandarizados.\\
+            % \hline
+                                    & RQ10: Las reglas de formato para nombres (autores, libros, editoriales) son: primera letra del nombre propio en mayúsculas y sin punto al final.\\
+            % \hline
+                                    & RQ11: El formato para las fechas será dd/mm/aaaa.\\
+            \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\subsection{Contexto}
+\label{ST3_SubsectionContexto}
+
+\subsubsection{Nuevas componentes de contexto}
+
+Se presenta a continuación la lista completa de componentes de contexto, incluyendo los requerimientos de calidad RQ9, RQ10  y RQ11 identificados durante la ejecución de esta etapa.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{3cm} | p{11cm} |} % Ajusta el tamaño de las columnas
+        \hline % Línea superior
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Componentes de Contexto}} \\
+        \hline % Línea debajo de la celda "Componentes de Contexto"
+        \textbf{Dominio} & D: Libros. \\
+        \hline
+        \textbf{Fuentes de datos} & Datos obtenidos de ambas librerías que se fusionarán y los proporcionados por el cliente sobre sus realidades. \\
+        \hline
+        \textbf{Tipos de usuario} & U1: Administrador. \\
+                                  & U2: Publicista digital. \\
+                                  & U3: Analista de datos. \\
+        \hline
+        \textbf{Tareas} & T1: Gestión. \\
+                        & T2: Análisis. \\
+                        & T3: Consulta. \\
+        % \hline
+        % \textbf{Otros datos?} & Datos relacionados con data at hand. \\
+        \hline
+        \textbf{Reglas de negocio}  & RN1: Cada libro deberá tener asociado un ISBN, un título, al menos un autor y un editor. \\
+                                    & RN2: El atributo ISBN en NL\_Books debe ser único a cada libro. \\
+                                    & RN3: El atributo Price en NL\_Books debe ser un real positivo. \\
+                                    & RN4: El atributo Age en NL\_Users debe ser un entero positivo. \\
+                                    & RN5: El atributo ID en NL\_Users debe ser único y no vacío. \\
+        
+        \hline
+        \textbf{Requerimientos}              & RQ1: Frescura de datos: la base debe actualizarse todos los viernes. \\
+        \textbf{de calidad}                  & RQ2: Al menos el 80\% de los usuarios que califican los libros deben ser mayores de 18 años. \\
+                                             & RQ3: Al menos el 95\% de los libros deben cumplir simultáneamente con los siguientes requisitos: contar con un ISBN, tener el título correctamente escrito y que el nombre del autor incluya al menos un nombre y un apellido. \\
+                                             & RQ4: Al menos el 60\% de los libros tengan al menos un score mayor o igual a 5. \\
+                                             & RQ5: La librería pretende tener al menos 500 libros y poseer al menos el 20\% de la lista de los 100 mejores libros de Goodreads. \\
+                                             & RQ6: Los libros deben contar con fecha de publicación. \\
+                                             & RQ7: Los libros deben tener editorial.\\
+                                             & RQ8: Los libros deben tener asignado un valor de score.\\
+                                             & RQ9: los nombres de las editoriales deben estar estandarizados.\\
+                                             & RQ10: Las reglas de formato para nombres (autores, libros, editoriales) son: primera letra del nombre propio en mayúsculas y sin punto al final.\\
+                                             & RQ11: El formato para las fechas será dd/mm/aaaa.\\
+                                             
+        \hline
+        \textbf{Requerimientos del sistema} & RS1: Los tiempos de respuesta del sitio Web de la NL no pueden superar los 3 segundos. \\
+        
+        \hline
+        \textbf{Necesidades de}    & F1: Libros por fecha (en particular, del año actual). \\
+        \textbf{filtrado}                   & F2: Libros por editorial. \\
+                                            & F3: Top de libros según su score. \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+\subsubsection{Contexto}
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{6cm} | p{2cm} | p{2cm} |p{2cm} | p{2cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{5}{|c|}{\cellcolor{blue!30} \textbf{Contexto}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Componente de contexto} & \textbf{Todos los usuarios} & \textbf{U1: Administrador} &  \textbf{U2: Publicista} &  \textbf{U3: Analista}\\
+        \hline
+        Dominio & D & & &\\
+        \hline
+        Tareas & T3 & T1 & T2 &\\
+        \hline
+        Reglas de negocio & RN1, RN2, RN3, RN4, RN5 & & &\\
+        \hline
+        Requerimientos de sistema & RS1 & & &\\
+        \hline
+        Requerimientos de calidad de datos & RQ5, RQ9, RQ10, RQ11 & RQ6, RQ7, RQ8 & RQ1, RQ2, RQ4 & RQ3\\
+        \hline
+        Necesidades de filtrado &  & F1, F2, F3 & & \\
+        \hline
+        Metadatos &   & & &\\
+        \hline
+        Metadatos de calidad de datos &  & & & \\
+        \hline
+        Otros datos &  & & & \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+
+
+
+\section{Entradas y salidas de la Fase 1 completa}
+Como preparación para abordar la Fase 2 del modelo CaDQM, se presentan a continuación las entradas y salidas generales de la Fase 1.
+
+\begin{center}
+    \resizebox{\textwidth}{!}{ % Ajusta la tabla al ancho de la página
+    \begin{tabular}{| p{5cm} | p{10cm} |} % Columnas con ancho ajustado
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{blue!30} \textbf{Entradas y salidas}} \\
+        \hline
+        \rowcolor{blue!15}
+        \textbf{Entradas} & \textbf{Salidas} \\
+        \hline
+        & Base de datos integrada (Data at hand) (\ref{ST1_DataAtHand}) \\
+        \hline
+         & Reporte de análisis de datos (\ref{ST2_SubsectionAnalisis}) \\
+        \hline
+         & Reporte de análisis de requerimientos de usuarios (\ref{ST3_reqUsuarios}) \\
+        \hline
+         & Reporte con problemas de CD  (\autoref{Problemas_ST2}) \\
+        \hline
+         & Modelo de contexto (\ref{ST3_SubsectionContexto}) \\
+        \hline
+    \end{tabular}
+    }
+\end{center}
+
+\noindent CD: Calidad de datos.\\
+
+
+
+\section{Descripción del desarrollo}
+
+% Se identifico el contexto en la realidad planteada
+% Se leyo la documentacion sobre las bases de datos proporcionadas
+% Se modificaron los csv para poder ser aiertos por sqlserver
+% Se integraron las bases para realizar el data at hand
+% Se utilizo Python y Pandas para el analisis de las tablas
+% se identificaron nuevos requerimientos de calidad.
+
+
+
+Siguiendo la metodología CaQDM, el primer paso fue identificar el contexto de la realidad planteada, identificando los elementos de contexto en ella para armar luego el modelo de contexto en base a estos. Luego se revisó la documentación disponible sobre las bases de datos proporcionadas, para entender su estructura y contenido, pero sin indagar en los datos.
+
+Dado que los archivos estaban en formato CSV y su contenido tenia ciertas particularidades, fue necesario realizar algunas modificaciones tales como cambiar el caracter separador y ver que el contenido de las celdas estaba entre comillas, para que pudieran abrirse correctamente en \textit{SQL Server}. Una vez adaptados y cargados correctamente, se diseñó la nueva estructura de la base de datos de NL donde se integraron las distintas fuentes de datos para conformar el data at hand.
+
+Para la realización del proceso, el análisis de las tablas se realizó utilizando \textit{Python} y la biblioteca \textit{Pandas}, lo que permitió explorar y procesar los datos de manera rápida y sencilla. Para el diseño de la nueva base, se utilizaron herramientas visuales como \textit{DBDiagram.io}, que luego se implementarían en \textit{SQL server}.
+
+\section{Conclusiones de la fase 1}
+
+%problemas para integrar la base
+% luego Costo entender los limites de cada etapa y el contenido, pero lo logramos y se sortearon con exito los obstaculos encontrados
+% Logramos aplicar las distintas etapas de la fase 1 de CaQDM
+
+La implementación de la primer fase de CaQDM en este proyecto fue una experiencia interesante en el manejo de datos donde pudimos aplicar el conocimiento y la metodología vistos en clase.
+
+ Uno de los principales retos fue la migración de la información proveniente de los conjuntos \textbf{L1} y \textbf{L2}, los cuales estaban originalmente en archivos \textbf{csv} y, en el caso particular de uno de ellos, tenia un tamaño grande que hizo difícil su tratamiento por lo que fue necesario una etapa previa de tratamiento de los datos, además de particularidades en la forma que estaban almacenados los datos, que generaron complicaciones a la hora de importar. No obstante, estos problemas pudieron ser sorteados con éxito.
+
+Por otro lado, al ser nuestra primer experiencia aplicando el modelo sobre un caso tan particular como este, donde se debian integrar datos, tuvimos ciertas dificultades al inicio en delimitar el alcance de cada una de las etapas del modelo, pero que luego fueron aclaradas y ejecutadas correctamente.
+
+Finalmente consideramos un logro importante el haber podido aplicar de forma satisfactoria la \textbf{Fase 1 del marco CaQDM} (Calidad y Gestión de Datos), aplicando en un caso con información real.
+
+ 
