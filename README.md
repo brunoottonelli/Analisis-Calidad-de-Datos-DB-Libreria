@@ -2,7 +2,7 @@
 
 Este caso de estudio se presenta como proyecto final para el curso de Calidad de Datos e Información de la Facultad de Ingeniería, UdelaR.
 
-Se seguirá el modelo CaDQM para analizar la calidad de una base de datos resultante de la unificación de dos librerías.
+Para este análisis de la calidad de los datos, se seguirá el modelo CaDQM.
 
 ## Realidad planteada
 El trabajo estará enfocado en la calidad de datos acerca de libros y conceptos relacionados con éstos.
