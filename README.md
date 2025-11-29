@@ -4,6 +4,8 @@ Este caso de estudio se presenta como proyecto final para el curso de Calidad de
 
 Para este análisis de la calidad de los datos, se seguirá el modelo CaDQM.
 
+Trabajo realizado en colaboración con Gabriel Rode.
+
 ## Realidad planteada
 El trabajo estará enfocado en la calidad de datos acerca de libros y conceptos relacionados con éstos.
 
