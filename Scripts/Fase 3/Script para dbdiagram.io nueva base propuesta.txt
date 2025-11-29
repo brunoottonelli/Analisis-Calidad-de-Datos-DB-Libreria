@@ -1,0 +1,74 @@
+Table NL_BOOKS {
+  ISBN varchar(20) [pk]
+  BookTitle varchar(255)
+  PublishedDate date
+  PublisherID varchar(20)
+  ImageURL_S varchar(255)
+  ImageURL_M varchar(255)
+  ImageURL_L varchar(255)
+  Description varchar(1000)
+  PreviewLink varchar(255)
+  InfoLink varchar(255)
+  Rating int
+  RatingCount int
+  Price float
+}
+
+Table NL_Publishers {
+  ID varchar(20) [pk]
+  Name varchar(100)
+}
+
+Table NL_Authors {
+  ID varchar(20) [pk]
+  Name varchar(100)
+}
+
+Table NL_BooksAuthors {
+  ISBN varchar(20) [pk]
+  AuthorID varchar(20)
+}
+
+Table NL_Categories {
+  ID varchar(50) [pk]
+  Description varchar(100)
+}
+
+Table NL_BooksCategories {
+  ISBN varchar(20) [pk]
+  CategorieID varchar(50)
+}
+
+Table NL_Users {
+  ID varchar(20) [pk]
+  Name varchar(100)
+  Location varchar(100)
+  Birthday date
+  Age int
+}
+
+Table NL_RATINGS {
+  ISBN varchar(20) [pk]
+  User_ID varchar(20)
+  helpfulness_votes int
+  total_votes int
+  review_time date
+  review_summary varchar(255)
+  review_text varchar(2000)
+  review_score int
+
+  indexes {
+    (ISBN, User_ID) [pk]
+  }
+}
+
+Ref: NL_BOOKS.PublisherID > NL_Publishers.ID
+Ref: NL_BooksAuthors.ISBN > NL_BOOKS.ISBN
+Ref: NL_BooksAuthors.AuthorID > NL_Authors.ID
+Ref: NL_BooksCategories.ISBN > NL_BOOKS.ISBN
+Ref: NL_BooksCategories.CategorieID > NL_Categories.ID
+Ref: NL_RATINGS.ISBN > NL_BOOKS.ISBN
+Ref: NL_RATINGS.User_ID > NL_Users.ID
+
+
+Ref: "NL_BooksCategories"."ISBN" < "NL_BooksCategories"."CategorieID"
