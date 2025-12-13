@@ -1,6 +1,6 @@
 # 📚 Caso de estudio de calidad de la base de datos resultante de la unificación de dos librerias.
 
-Este caso de estudio se presenta como proyecto final para el curso de Calidad de Datos e Información de la Facultad de Ingeniería, UdelaR.
+Este caso de estudio se presenta como proyecto final para el curso de Calidad de Datos e Información de la Facultad de Ingeniería, UdelaR. El reporte final puede verse [aquí](https://github.com/brunoottonelli/Analisis-Calidad-de-Datos-DB-Libreria/blob/main/Reporte_final___CDI.pdf). 
 
 Para este análisis de la calidad de los datos, se seguirá el modelo CaDQM.
 
